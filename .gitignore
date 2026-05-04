@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+frontend/dist/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Uploads (keep dirs, ignore files)
+backend/uploads/pdfs/*
+backend/uploads/images/*
+!backend/uploads/pdfs/.gitkeep
+!backend/uploads/images/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docker volumes
+mysql_data/
+
+# SSL certs
+nginx/ssl/*.pem
+nginx/ssl/*.key
+
+# Backups
+*.tar.gz
+*.zip
+*.backup

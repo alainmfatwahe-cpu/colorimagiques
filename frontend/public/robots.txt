@@ -1,0 +1,9 @@
+# ColoriMagiques — robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://colorimagiques.com/sitemap.xml

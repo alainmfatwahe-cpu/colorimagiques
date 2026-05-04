@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="530" viewBox="0 0 400 530">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="530" rx="24" fill="url(#bg)"/>
+  <text x="200" y="201.4" text-anchor="middle" font-size="120">🐱</text>
+  <text x="200" y="328.6" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="26" fill="white">Animaux Mignons</text>
+  <text x="200" y="381.59999999999997" text-anchor="middle" font-family="sans-serif" font-size="14" fill="rgba(255,255,255,0.7)">PDF • 300 DPI • A4</text>
+  <rect x="60" y="434.59999999999997" width="280" height="3" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <text x="200" y="487.6" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="16" fill="rgba(255,255,255,0.9)">🎨 ColoriMagiques</text>
+</svg>
