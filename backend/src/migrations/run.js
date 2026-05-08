@@ -1,4 +1,4 @@
-// backend/src/migrations/run.js
+﻿// backend/src/migrations/run.js
 // Supporte SQLite, MySQL et PostgreSQL
 import db from '../config/database.js';
 
@@ -199,3 +199,5 @@ async function migrate() {
 }
 
 migrate();
+
+export default migrate;
