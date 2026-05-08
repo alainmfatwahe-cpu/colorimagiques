@@ -194,7 +194,7 @@ async function migrate() {
     console.error('❌ Erreur migrations:', err.message);
     throw err;
   } finally {
-    await db.destroy();
+    
   }
 }
 
