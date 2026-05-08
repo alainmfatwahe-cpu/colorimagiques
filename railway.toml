@@ -5,7 +5,7 @@ environment = 'production'
 builder = 'nixpacks'
 
 [deploy]
-startCommand = 'node src/server.js'
+startCommand = 'node backend/src/server.js'
 healthCheckPath = '/api/products'
 
 [[services]]
