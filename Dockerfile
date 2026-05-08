@@ -2,11 +2,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy backend from rootDirectory context
+# Backend dependencies
 COPY backend/package*.json ./backend/
 RUN mkdir -p ./backend && cd ./backend && npm ci --omit=dev
 
-# Copy everything needed for frontend build (from repo root)
+# Frontend files
 COPY frontend/package*.json ./frontend/
 COPY frontend/vite.config.js ./frontend/
 COPY frontend/tailwind.config.js ./frontend/
@@ -26,4 +26,4 @@ RUN mkdir -p ./backend/uploads/pdfs ./backend/uploads/images
 
 EXPOSE 8080
 
-CMD sh -c “node backend/src/migrations/run.js && node backend/src/migrations/seed.js && node backend/src/server.js”
+CMD sh -c 'node backend/src/migrations/run.js && node backend/src/migrations/seed.js && node backend/src/server.js'
