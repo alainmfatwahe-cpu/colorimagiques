@@ -1,16 +1,27 @@
 // backend/src/config/database.js
-// Supporte MySQL (production/Docker) ET SQLite (dev/sandbox preview)
+// Supporte MySQL, PostgreSQL (production) ET SQLite (dev/sandbox preview)
 import knex from 'knex';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const useMySQL = process.env.DB_HOST && process.env.DB_HOST !== 'sqlite';
+const dbUrl = process.env.DATABASE_URL;
+const dbHost = process.env.DB_HOST;
 
-const config = useMySQL
+const useMySQL = dbHost && dbHost !== 'sqlite';
+const usePostgres = dbUrl && dbUrl.startsWith('postgresql://');
+
+const config = usePostgres
+  ? {
+      client: 'pg',
+      connection: dbUrl,
+      pool: { min: 2, max: 10 },
+      migrations: { tableName: 'knex_migrations' },
+    }
+  : useMySQL
   ? {
       client: 'mysql2',
       connection: {
-        host: process.env.DB_HOST || 'localhost',
+        host: dbHost || 'localhost',
         port: parseInt(process.env.DB_PORT || '3306'),
         user: process.env.DB_USER || 'colorimagiques',
         password: process.env.DB_PASSWORD || 'colorimagiques_secret',
