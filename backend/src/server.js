@@ -24,6 +24,7 @@ import reviewRoutes from './routes/reviews.js';
 import seoRoutes from './routes/seo.js';
 import newsletterRoutes from './routes/newsletter.js';
 import seedRoutes from './routes/seed.js';
+import resetRoutes from './routes/reset.js';
 import migrate from './migrations/run.js';
 
 const app = express();
@@ -64,6 +65,7 @@ app.use('/api/download', downloadRoutes);
 app.use('/api/reviews', apiLimiter, reviewRoutes);
 app.use('/api/newsletter', apiLimiter, newsletterRoutes);
 app.use('/api/admin', seedRoutes);
+app.use('/api/dev', resetRoutes);
 
 // â”€â”€â”€ Routes SEO â”€â”€â”€
 app.use('/', seoRoutes);
