@@ -1,21 +1,27 @@
 ﻿import { Router } from 'express';
 import db from '../config/database.js';
 const router = Router();
-import { createHash } from 'crypto';
 
-router.post('/reset-admin-hash', async (req, res) => {
+router.post('/seed', async (req, res) => {
   try {
-    const hash = createHash('sha256').update('Admin2026!ColoriMagiques_SALT_2026').digest('hex');
-    await db.raw('UPDATE admins SET password_hash = ? WHERE email = ?', [hash, 'admin@colorimagiques.com']);
-    res.json({ success: true, message: 'Password hash reset to SHA256' });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-router.get('/check-admin', async (req, res) => {
-  try {
-    const admin = await db('admins').where('email', 'admin@colorimagiques.com').first();
-    res.json({ email: admin.email, hash: admin.password_hash.substring(0, 20) + '...', name: admin.name });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+    const products = [
+      { slug: 'alphabet-pre-pdf', title: 'Alphabet - Preparer le PDF', age_group: '3-5', theme: 'nature', price_eur: 4.99, price_usd: 5.99, short_description: 'Apprendre l alphabet en coloriant', page_count: 26, dpi: 300, badge: 'Nouveau', is_featured: true, is_published: true, preview_images: '[]' },
+      { slug: 'color-pre-pdf', title: 'Colorier les couleurs', age_group: '3-5', theme: 'nature', price_eur: 4.99, price_usd: 5.99, short_description: 'Decouvrir les couleurs en coloriant', page_count: 30, dpi: 300, badge: '', is_featured: false, is_published: true, preview_images: '[]' },
+      { slug: 'forme-geometrique-pre-pdf', title: 'Formes geometriques', age_group: '3-5', theme: 'nature', price_eur: 4.99, price_usd: 5.99, short_description: 'Decouvrir les formes en coloriant', page_count: 24, dpi: 300, badge: '', is_featured: false, is_published: true, preview_images: '[]' },
+      { slug: 'nursery-prints-pre-pdf', title: 'Nursery Prints', age_group: '3-5', theme: 'nature', price_eur: 5.99, price_usd: 6.99, short_description: 'Impressions pour chambre de bebe', page_count: 40, dpi: 300, badge: 'Populaire', is_featured: true, is_published: true, preview_images: '[]' },
+    ];
+    const results = [];
+    for (const p of products) {
+      const existing = await db('products').where('slug', p.slug).first();
+      if (existing) { results.push({ slug: p.slug, status: 'skipped' }); continue; }
+      const [id] = await db('products').insert(p);
+      results.push({ slug: p.slug, status: 'inserted', id });
+    }
+    const count = await db('products').count('id as total').first();
+    res.json({ success: true, results, total: count.total });
+  } catch (err) {
+    res.status(500).json({ error: err.message, stack: err.stack });
+  }
 });
 
 export default router;
