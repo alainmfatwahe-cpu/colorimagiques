@@ -1,13 +1,14 @@
-[railway]
-environment = 'production'
+﻿[railway]
+environment = "production"
 
 [build]
-builder = 'nixpacks'
+builder = "docker"
+dockerfile = "Dockerfile"
 
 [deploy]
-startCommand = 'node backend/src/server.js'
-healthCheckPath = '/api/products'
+startCommand = "node backend/src/server.js & nginx -g 'daemon off;'"
+healthCheckPath = "/api/products"
 
 [[services]]
-name = 'backend'
-rootDirectory = '.'
+name = "backend"
+rootDirectory = "."
