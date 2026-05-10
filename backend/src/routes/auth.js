@@ -1,7 +1,7 @@
-// backend/src/routes/auth.js
+﻿// backend/src/routes/auth.js
 // Routes d'authentification admin (login, me, logout)
 import { Router } from 'express';
-import bcrypt from 'bcryptjs';
+import { createHash } from 'crypto';
 import db from '../config/database.js';
 import { generateToken, requireAuth } from '../middleware/auth.js';
 
@@ -24,7 +24,8 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     }
 
-    const valid = await bcrypt.compare(password, admin.password_hash);
+    const hash = createHash('sha256').update(password + 'ColoriMagiques_SALT_2026').digest('hex');
+  const valid = (hash === admin.password_hash);
     if (!valid) {
       return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     }
