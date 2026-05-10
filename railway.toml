@@ -1,12 +1,8 @@
-﻿[railway]
+[railway]
 environment = "production"
 
-[build]
-builder = "docker"
-dockerfile = "Dockerfile"
-
 [deploy]
-startCommand = "node backend/src/server.js & nginx -g 'daemon off;'"
+startCommand = "node backend/src/migrations/run.js && node backend/src/migrations/seed.js && node backend/src/server.js"
 healthCheckPath = "/api/products"
 
 [[services]]

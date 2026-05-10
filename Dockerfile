@@ -1,4 +1,4 @@
-﻿FROM node:20-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -26,4 +26,4 @@ RUN mkdir -p ./backend/uploads/pdfs ./backend/uploads/images
 
 EXPOSE 8080
 
-CMD ["/bin/sh", "-c", "node backend/src/migrations/run.js && node backend/src/migrations/seed.js && node backend/src/server.js & nginx -g 'daemon off;'"]
+CMD sh -c 'node backend/src/migrations/run.js && node backend/src/migrations/seed.js && node backend/src/server.js'
