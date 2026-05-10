@@ -1,8 +1,12 @@
 ﻿import { Router } from 'express';
 import db from '../config/database.js';
 import { requireAuth } from '../middleware/auth.js';
-import bcrypt from 'bcryptjs';
+import { createHash } from 'crypto';
 const router = Router();
+
+function hashPassword(password) {
+  return createHash('sha256').update(password + 'ColoriMagiques_SALT_2026').digest('hex');
+}
 
 const products = [
   { slug: 'alphabet-pre-pdf', title: 'Alphabet - Preparer le PDF', age_group: '3-5', theme: 'nature', price_eur: 4.99, price_usd: 5.99, short_description: 'Apprendre l alphabet en coloriant', page_count: 26, dpi: 300, badge: 'Nouveau', is_featured: true, is_published: true, preview_images: '[]', pdf_filename: null, bonus_filename: null },
@@ -29,7 +33,7 @@ router.post('/init-admin', async (req, res) => {
   try {
     const existing = await db('admins').where('email', email).first();
     if (existing) return res.json({ message: 'Admin already exists', email });
-    const hash = bcrypt.hashSync(password || 'ColoriMagiques2026!', 10);
+    const hash = hashPassword(password || 'Admin2026!');
     const [id] = await db('admins').insert({ email, password_hash: hash, name: name || 'Admin', role: 'superadmin' });
     res.json({ success: true, email, id });
   } catch (err) { res.status(500).json({ error: err.message }); }
