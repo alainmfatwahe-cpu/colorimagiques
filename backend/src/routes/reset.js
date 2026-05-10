@@ -14,13 +14,14 @@ router.post('/seed', async (req, res) => {
     for (const p of products) {
       const existing = await db('products').where('slug', p.slug).first();
       if (existing) { results.push({ slug: p.slug, status: 'skipped' }); continue; }
-      const [id] = await db('products').insert(p);
+      const result = await db('products').returning('id').insert(p);
+      const id = Array.isArray(result) ? result[0] : result;
       results.push({ slug: p.slug, status: 'inserted', id });
     }
     const count = await db('products').count('id as total').first();
     res.json({ success: true, results, total: count.total });
   } catch (err) {
-    res.status(500).json({ error: err.message, stack: err.stack });
+    res.status(500).json({ error: err.message });
   }
 });
 
