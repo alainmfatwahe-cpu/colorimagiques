@@ -1,7 +1,7 @@
-﻿// backend/src/routes/seed.js
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import db from '../config/database.js';
 import { requireAuth } from '../middleware/auth.js';
+import bcrypt from 'bcryptjs';
 const router = Router();
 
 const products = [
@@ -29,8 +29,7 @@ router.post('/init-admin', async (req, res) => {
   try {
     const existing = await db('admins').where('email', email).first();
     if (existing) return res.json({ message: 'Admin already exists', email });
-    const bcrypt = await import('bcryptjs');
-    const hash = await bcrypt.hash(password || 'ColoriMagiques2026!', 10);
+    const hash = bcrypt.hashSync(password || 'ColoriMagiques2026!', 10);
     const [id] = await db('admins').insert({ email, password_hash: hash, name: name || 'Admin', role: 'superadmin' });
     res.json({ success: true, email, id });
   } catch (err) { res.status(500).json({ error: err.message }); }
