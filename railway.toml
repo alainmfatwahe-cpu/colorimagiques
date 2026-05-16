@@ -1,10 +1,8 @@
-[railway]
+﻿[railway]
 environment = "production"
 
 [deploy]
-startCommand = "node backend/src/server.js"
 healthCheckPath = "/api/products"
-restartPolicy = "on_failure"
 
 [[services]]
 name = "backend"
