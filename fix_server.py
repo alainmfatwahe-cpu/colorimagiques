@@ -1,5 +1,6 @@
-// backend/src/server.js
-// Point d'entrée principal — Serveur Express ColoriMagiques
+﻿path = 'C:/Users/Alain/workspace/colorimagiques/webapp/backend/src/server.js'
+code = """// backend/src/server.js
+// Point d'entr\u00e9e principal \u2014 Serveur Express ColoriMagiques
 
 import express from 'express';
 import cors from 'cors';
@@ -33,31 +34,31 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT || 4000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-// ——— Sécurité ———
+// \u2014\u2014\u2014 S\u00e9curit\u00e9 \u2014\u2014\u2014
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' }, contentSecurityPolicy: false }));
 
-// ——— CORS ———
+// \u2014\u2014\u2014 CORS \u2014\u2014\u2014
 app.use(cors({ origin: [FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173'], credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization'] }));
 
-// ——— Rate Limiting ———
+// \u2014\u2014\u2014 Rate Limiting \u2014\u2014\u2014
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, message: { error: 'Trop de requetes, reessayez dans 15 minutes' } });
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Trop de tentatives de connexion' } });
 
-// ——— Logging ———
+// \u2014\u2014\u2014 Logging \u2014\u2014\u2014
 app.use(morgan('dev'));
 
-// ——— Body parsing ———
+// \u2014\u2014\u2014 Body parsing \u2014\u2014\u2014
 app.use((req, res, next) => {
  if (req.originalUrl === '/api/orders/webhook') { next(); }
  else { express.json({ limit: '10mb' })(req, res, next); }
 });
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ——— Static files ———
+// \u2014\u2014\u2014 Static files \u2014\u2014\u2014
 const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR || './uploads');
 app.use('/api/uploads/images', express.static(path.join(UPLOAD_DIR, 'images'), { maxAge: '7d', etag: true }));
 
-// ——— Routes API ———
+// \u2014\u2014\u2014 Routes API \u2014\u2014\u2014
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', apiLimiter, productRoutes);
 app.use('/api/orders', orderRoutes);
@@ -67,11 +68,11 @@ app.use('/api/newsletter', apiLimiter, newsletterRoutes);
 app.use('/api/admin', seedRoutes);
 app.use('/api/dev', resetRoutes);
 
-// ——— Routes SEO ———
+// \u2014\u2014\u2014 Routes SEO \u2014\u2014\u2014
 app.use('/', seoRoutes);
 app.use('/api/seo', seoRoutes);
 
-// ——— Servir le frontend buildé ———
+// \u2014\u2014\u2014 Servir le frontend build\u00e9 \u2014\u2014\u2014
 const frontendDist = '/app/frontend/dist';
 app.use(express.static(frontendDist));
 
@@ -81,7 +82,7 @@ app.get('*', (req, res) => {
  else { res.status(404).json({ error: 'Route API non trouvee' }); }
 });
 
-// ——— Gestion d'erreurs ———
+// \u2014\u2014\u2014 Gestion d'erreurs \u2014\u2014\u2014
 app.use((err, req, res, next) => {
  console.error('Erreur non geree:', err);
  if (err.code === 'LIMIT_FILE_SIZE') return res.status(413).json({ error: 'Fichier trop volumineux' });
@@ -90,7 +91,7 @@ app.use((err, req, res, next) => {
  res.status(500).json({ error: 'Erreur interne du serveur' });
 });
 
-// ——— Démarrage ———
+// \u2014\u2014\u2014 D\u00e9marrage \u2014\u2014\u2014
 migrate()
   .then(() => {
     console.log('Migrations OK');
@@ -104,3 +105,8 @@ migrate()
   });
 
 export default app;
+"""
+
+with open(path, 'w', encoding='utf-8') as f:
+    f.write(code)
+print('OK')
