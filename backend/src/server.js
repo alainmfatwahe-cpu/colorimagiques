@@ -1,3 +1,17 @@
+import diagFs from 'fs';
+console.log('=== STARTUP DIAGNOSTIC ===');
+console.log('UPLOAD_DIR env:', process.env.UPLOAD_DIR);
+console.log('cwd:', process.cwd());
+const dirsToCheck = ['/app', '/app/backend', '/app/backend/uploads', '/app/backend/uploads/images', '/app/uploads'];
+for (const d of dirsToCheck) {
+  try {
+    const files = diagFs.readdirSync(d);
+    console.log('  ' + d + ' [' + files.length + ' entries]: ' + JSON.stringify(files.slice(0, 5)));
+  } catch (e) {
+    console.log('  ' + d + ' - ERROR: ' + e.message);
+  }
+}
+console.log('=== END DIAGNOSTIC ===');
 // backend/src/server.js
 // Point d'entrée principal — Serveur Express ColoriMagiques
 
