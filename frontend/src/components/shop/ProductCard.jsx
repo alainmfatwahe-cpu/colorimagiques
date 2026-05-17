@@ -1,10 +1,10 @@
-// frontend/src/components/shop/ProductCard.jsx
 import React from 'react';
 import { Star, ShoppingCart, Eye } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import ProductCarousel from './ProductCarousel';
 
 const badgeColors = {
   new: 'bg-emerald-500',
@@ -13,11 +13,19 @@ const badgeColors = {
   promo: 'bg-red-500',
 };
 
+const CAROUSEL_SLUGS = [
+  'les-jeux-olympiques-de-noel',
+  'noel-adorable-pour-enfants',
+  'latelier-des-oufs-decores',
+  'latelier-magique-du-pere-noel',
+];
+
 export default function ProductCard({ product, index = 0 }) {
   const { t, formatPrice, getComparePrice, getLocalizedField } = useLanguage();
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(product.id);
   const comparePrice = getComparePrice(product);
+  const hasCarousel = CAROUSEL_SLUGS.includes(product.slug);
 
   return (
     <motion.div
@@ -28,29 +36,21 @@ export default function ProductCard({ product, index = 0 }) {
     >
       <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-purple-200 h-full flex flex-col">
         <Link to={`/product/${product.id}`} className="block">
-          <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-yellow-50">
-            {product.cover_image ? (
-              <img
-                src={product.cover_image}
-                alt={getLocalizedField(product, 'title')}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                loading="lazy"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="text-6xl">🎨</span>
-              </div>
-            )}
+          <div className="relative aspect-[3/4] overflow-hidden">
+            <ProductCarousel
+              slug={product.slug}
+              title={getLocalizedField(product, 'title')}
+            />
 
             {product.badge && product.badge !== '' && (
-              <span className={`absolute top-3 left-3 ${badgeColors[product.badge] || 'bg-gray-500'} text-white text-xs font-bold px-3 py-1 rounded-full shadow-md`}>
+              <span className={`absolute top-3 left-3 ${badgeColors[product.badge] || 'bg-gray-500'} text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-20`}>
                 {t(`product.${product.badge}`)}
               </span>
             )}
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
 
-            <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+            <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10">
               <button className="w-full bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white rounded-xl font-medium text-sm py-2 px-4 flex items-center justify-center gap-1.5 shadow-lg">
                 <Eye className="w-4 h-4" />
                 {t('product.viewDetails')}
