@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ——— Static files ———
-const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR || './uploads');
+const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '../../uploads'));
 app.use('/api/uploads/images', express.static(path.join(UPLOAD_DIR, 'images'), { maxAge: '7d', etag: true }));
 
 // ——— Routes API ———
