@@ -22,9 +22,11 @@ RUN npm install && npm run build
 # Final setup
 WORKDIR /app
 COPY backend/src ./backend/src
+# VOICI LA LIGNE MANQUANTE : On copie les uploads depuis le repo
+COPY backend/uploads ./backend/uploads
 RUN mkdir -p ./backend/uploads/pdfs ./backend/uploads/images
 
 EXPOSE 8080
 
-# Start server only (migrations+seed called inside server.js after listen)
+# Start server only
 CMD ["node", "backend/src/server.js"]
