@@ -7,3 +7,6 @@ healthCheckPath = "/api/products"
 [[services]]
 name = "backend"
 rootDirectory = "."
+[build]
+BUILDKIT_CACHE_LAYER_OPTIMIZATION = false
+
