@@ -5,10 +5,12 @@ import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
+const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,8 +24,6 @@ import newsletterRoutes from './routes/newsletter.js';
 import seedRoutes from './routes/seed.js';
 import resetRoutes from './routes/reset.js';
 import migrate from './migrations/run.js';
-import { createRequire } from 'module';
-const require = createRequire(import\.meta\.url);
 
 const app = express();
 app.set('trust proxy', 1);
@@ -40,8 +40,8 @@ const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { er
 app.use(morgan('dev'));
 
 app.use((req, res, next) => {
- if (req.originalUrl === '/api/orders/webhook') { next(); }
- else { express.json({ limit: '10mb' })(req, res, next); }
+  if (req.originalUrl === '/api/orders/webhook') { next(); }
+  else { express.json({ limit: '10mb' })(req, res, next); }
 });
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -57,56 +57,22 @@ app.use('/api/reviews', apiLimiter, reviewRoutes);
 app.use('/api/newsletter', apiLimiter, newsletterRoutes);
 app.use('/api/admin', seedRoutes);
 app.use('/api/dev', resetRoutes);
-
-app.use('/', seoRoutes);
-// DEBUG - à supprimer après
-app.get('/api/debug/files', (req, res) => {
-  const fs = require('fs');
-  const uploadDir = '/app/backend/uploads';
-  const imagesDir = path.join(uploadDir, 'images');
-  const result = { uploadDir, imagesDir, exists: fs.existsSync(uploadDir), files: [] };
-  if (fs.existsSync(imagesDir)) {
-    const files = fs.readdirSync(imagesDir);
-    result.files = files.filter(f => f.includes('mockup')).slice(0, 10);
-    result.total = files.length;
-  }
-  res.json(result);
-});
-
 app.use('/api/seo', seoRoutes);
 
 const frontendDist = '/app/frontend/dist';
 app.use(express.static(frontendDist));
 
 app.get('*', (req, res) => {
- if (!req.path.startsWith('/api/')) { res.sendFile(path.join(frontendDist, 'index.html')); }
- else { res.status(404).json({ error: 'Route API non trouvee' }); }
+  if (!req.path.startsWith('/api/')) { res.sendFile(path.join(frontendDist, 'index.html')); }
+  else { res.status(404).json({ error: 'Route API non trouvee' }); }
 });
 
 app.use((err, req, res, next) => {
- console.error('Erreur non geree:', err);
- if (err.code === 'LIMIT_FILE_SIZE') return res.status(413).json({ error: 'Fichier trop volumineux' });
- if (err.message?.includes('Seuls les fichiers PDF')) return res.status(400).json({ error: err.message });
- if (err.message?.includes('Format d image')) return res.status(400).json({ error: err.message });
- res.status(500).json({ error: 'Erreur interne du serveur' });
-});
-
-
-// DEBUG endpoint - à supprimer après
-app.get('/api/debug/static-check', (req, res) => {
-  const uploadDir = process.env.UPLOAD_DIR || 'not set';
-  const resolved = path.resolve(uploadDir);
-  const imagesDir = path.join(resolved, 'images');
-  const testFile = path.join(imagesDir, 'les-jeux-olympiques-de-noel_mockup_1.png');
-  const fs = require('fs');
-  res.json({
-    UPLOAD_DIR_env: uploadDir,
-    resolved_UPLOAD_DIR: resolved,
-    imagesDir,
-    testFile,
-    fileExists: fs.existsSync(testFile),
-    filesInImagesDir: fs.existsSync(imagesDir) ? fs.readdirSync(imagesDir).slice(0, 5) : 'DIR NOT FOUND'
-  });
+  console.error('Erreur non geree:', err);
+  if (err.code === 'LIMIT_FILE_SIZE') return res.status(413).json({ error: 'Fichier trop volumineux' });
+  if (err.message?.includes('Seuls les fichiers PDF')) return res.status(400).json({ error: err.message });
+  if (err.message?.includes('Format d image')) return res.status(400).json({ error: err.message });
+  res.status(500).json({ error: 'Erreur interne du serveur' });
 });
 
 migrate()
@@ -122,7 +88,3 @@ migrate()
   });
 
 export default app;
-
-
-
-
