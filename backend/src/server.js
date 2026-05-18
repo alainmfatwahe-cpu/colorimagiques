@@ -75,6 +75,24 @@ app.use((err, req, res, next) => {
  res.status(500).json({ error: 'Erreur interne du serveur' });
 });
 
+
+// DEBUG endpoint - à supprimer après
+app.get('/api/debug/static-check', (req, res) => {
+  const uploadDir = process.env.UPLOAD_DIR || 'not set';
+  const resolved = path.resolve(uploadDir);
+  const imagesDir = path.join(resolved, 'images');
+  const testFile = path.join(imagesDir, 'les-jeux-olympiques-de-noel_mockup_1.png');
+  const fs = require('fs');
+  res.json({
+    UPLOAD_DIR_env: uploadDir,
+    resolved_UPLOAD_DIR: resolved,
+    imagesDir,
+    testFile,
+    fileExists: fs.existsSync(testFile),
+    filesInImagesDir: fs.existsSync(imagesDir) ? fs.readdirSync(imagesDir).slice(0, 5) : 'DIR NOT FOUND'
+  });
+});
+
 migrate()
   .then(() => {
     console.log('Migrations OK');
@@ -88,3 +106,4 @@ migrate()
   });
 
 export default app;
+
