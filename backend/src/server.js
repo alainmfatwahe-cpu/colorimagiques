@@ -22,6 +22,8 @@ import newsletterRoutes from './routes/newsletter.js';
 import seedRoutes from './routes/seed.js';
 import resetRoutes from './routes/reset.js';
 import migrate from './migrations/run.js';
+import { createRequire } from 'module';
+const require = createRequire(import\.meta\.url);
 
 const app = express();
 app.set('trust proxy', 1);
@@ -120,6 +122,7 @@ migrate()
   });
 
 export default app;
+
 
 
 
