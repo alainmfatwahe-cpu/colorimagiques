@@ -46,8 +46,28 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '../uploads'));
-console.log('[Static] UPLOAD_DIR resolved to:', UPLOAD_DIR);
-app.use('/api/uploads/images', express.static(path.join(UPLOAD_DIR, 'images'), { maxAge: '7d', etag: true }));
+const IMAGES_DIR = path.join(UPLOAD_DIR, 'images');
+
+console.log('[Startup] UPLOAD_DIR:', UPLOAD_DIR);
+console.log('[Startup] IMAGES_DIR:', IMAGES_DIR);
+console.log('[Startup] IMAGES_DIR exists?', require('fs').existsSync(IMAGES_DIR));
+if (require('fs').existsSync(IMAGES_DIR)) {
+  const files = require('fs').readdirSync(IMAGES_DIR);
+  console.log('[Startup] Files count:', files.length);
+  console.log('[Startup] First 5 files:', files.slice(0, 5));
+}
+
+// Route statique custom pour les images
+app.get('/api/uploads/images/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(IMAGES_DIR, filename);
+  console.log('[Static] Serving:', filePath);
+  console.log('[Static] Exists?', require('fs').existsSync(filePath));
+  if (require('fs').existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
+  res.status(404).json({ error: 'Image not found', requested: filename, searched: filePath });
+});
 
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', apiLimiter, productRoutes);
@@ -88,4 +108,3 @@ migrate()
   });
 
 export default app;
-
