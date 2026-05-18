@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MOCKUP_COUNTS = {
@@ -22,7 +22,7 @@ export default function ProductCarousel({ slug, title }) {
     if (total === 0) return;
     const imgs = Array.from({ length: total }, (_, i) => {
       const img = new Image();
-      img.src = `/api/uploads/images/${slug}_mockup_${i + 1}.png`;
+      img.src = `https://raw.githubusercontent.com/alainmfatwahe-cpu/colorimagiques/master/backend/uploads/images/${slug}_mockup_${i + 1}.png`;
       return img;
     });
     setLoaded(imgs);
@@ -31,7 +31,7 @@ export default function ProductCarousel({ slug, title }) {
   if (total === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 via-pink-50 to-yellow-50">
-        <span className="text-6xl">🎨</span>
+        <span className="text-6xl">ðŸŽ¨</span>
       </div>
     );
   }
