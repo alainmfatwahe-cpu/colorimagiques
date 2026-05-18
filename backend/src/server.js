@@ -57,6 +57,20 @@ app.use('/api/admin', seedRoutes);
 app.use('/api/dev', resetRoutes);
 
 app.use('/', seoRoutes);
+// DEBUG - à supprimer après
+app.get('/api/debug/files', (req, res) => {
+  const fs = require('fs');
+  const uploadDir = '/app/backend/uploads';
+  const imagesDir = path.join(uploadDir, 'images');
+  const result = { uploadDir, imagesDir, exists: fs.existsSync(uploadDir), files: [] };
+  if (fs.existsSync(imagesDir)) {
+    const files = fs.readdirSync(imagesDir);
+    result.files = files.filter(f => f.includes('mockup')).slice(0, 10);
+    result.total = files.length;
+  }
+  res.json(result);
+});
+
 app.use('/api/seo', seoRoutes);
 
 const frontendDist = '/app/frontend/dist';
@@ -106,5 +120,6 @@ migrate()
   });
 
 export default app;
+
 
 
